@@ -1,1 +1,62 @@
-
+name: "Build and deploy conduit-frontend app in AWS"
+on:
+  push:
+    paths:
+      - 'conduit_frontend'
+      - '.github/workflows/CI.yml'
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  build-frontend-conduit:
+    defaults:
+      run:
+        working-directory: conduit_frontend/src
+    runs-on: ubuntu-22.04
+    container:
+      image: node:16
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm run test a --watchAll=false
+      - run: npm run build
+        env:
+          DISABLE_ESLINT_PLUGIN: true
+      - name: Save frontend build
+        uses: actions/upload-artifact@v3
+        with:
+          name: fe-app-build
+          path: conduit_frontend/src/build
+          retention-days: 1
+          
+  upload-frontend-conduit:
+    needs:
+      - build-frontend-conduit
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: fe-app-build
+          path: build
+      - run: pwd && ls -la
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+          aws-region: us-east-1
+      - name: Upload files
+        run: aws s3 sync build/ s3://${{ secrets.S3_BUCKET_NAME}}/
+        
+  invalidate-cdn-cache:
+    needs:
+      - upload-frontend-conduit
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+          aws-region: us-east-1
+      - name: Invalidate cache 
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
+          
