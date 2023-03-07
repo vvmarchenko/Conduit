@@ -11,7 +11,7 @@ jobs:
   build-frontend-conduit:
     defaults:
       run:
-        working-directory: conduit_frontend/src
+        working-directory: conduit_frontend/
     runs-on: ubuntu-22.04
     container:
       image: node:16
@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: fe-app-build
-          path: conduit_frontend/src/build
+          path: conduit_frontend/build
           retention-days: 1
           
   upload-frontend-conduit:
