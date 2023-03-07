@@ -2,7 +2,7 @@ name: "Build and deploy conduit-frontend app in AWS"
 on:
   push:
     paths:
-      - 'conduit_frontend'
+      - 'conduit_frontend/**'
       - '.github/workflows/CI.yml'
 permissions:
   id-token: write
