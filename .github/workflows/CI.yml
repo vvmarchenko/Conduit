@@ -21,7 +21,7 @@ jobs:
       - run: npm run test a --watchAll=false
       - run: npm run build
         env:
-          DISABLE_ESLINT_PLUGIN: true
+          DISABLE_ESLINT_PLUGIN: true # Attention! Use this feature only in test workflows.
       - name: Save frontend build
         uses: actions/upload-artifact@v3
         with:
