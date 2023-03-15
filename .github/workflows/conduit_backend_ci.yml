@@ -70,7 +70,7 @@ jobs:
       
       - name: Render taskDef from the template file
         run: | 
-          envsubst < ./conduit_backend/backend-taskdef-template > ecs-taskdef.json
+          envsubst < ecs-taskdef-template > ecs-taskdef.json
 
       - name: Register taskDef
         run: |
