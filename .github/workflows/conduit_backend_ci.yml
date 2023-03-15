@@ -51,17 +51,17 @@ jobs:
   deploy-to-ecs:
     needs: build-and-publish-image
     runs-on: ubuntu-22.04
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ecs-taskdef-template
-      
+    steps:      
       - name: Configure AWS creds
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
+        
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ecs-taskdef-template
       
       - name: Render taskDef from the template file
         run: envsubst < ecs-taskdef-template > ecs-taskdef.json
