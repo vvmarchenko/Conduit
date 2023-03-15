@@ -69,7 +69,8 @@ jobs:
           
       
       - name: Render taskDef from the template file
-        run: envsubst < ${{ env.TEMPLATE_FILE }} > ecs-taskdef.json
+        run: | 
+          envsubst < "${{ env.TEMPLATE_FILE }}" > ecs-taskdef.json
 
       - name: Register taskDef
         run: |
