@@ -70,7 +70,7 @@ jobs:
       
       - name: Render taskDef from the template file
         run: | 
-          envsubst < "${{ env.TEMPLATE_FILE }}" > ecs-taskdef.json
+          envsubst < ./conduit_backend/artifact > ecs-taskdef.json
 
       - name: Register taskDef
         run: |
