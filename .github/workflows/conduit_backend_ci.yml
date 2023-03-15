@@ -28,11 +28,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-          aws-region: ${{ AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
       
       - name: Build backend image
         run: |
-          docker build -t "${{ IMAGE_TAG }}" .
+          docker build -t "${{ env.IMAGE_TAG }}" .
       
       - name: Push image to AWS ECR
         run: |
@@ -60,7 +60,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-          aws-region: ${{ AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
         env:
           TEMPLATE_FILE: ./my-artifact/backend-taskdef-template
       
