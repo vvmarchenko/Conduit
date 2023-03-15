@@ -1,90 +1,90 @@
-name: "Conduit_backend"
-on:
-  push:
-    paths:
-      - 'conduit_backend/**'
-      - '.github/workflows/conduit_backend_ci.yml'
+# name: "Conduit_backend"
+# on:
+#   push:
+#     paths:
+#       - 'conduit_backend/**'
+#       - '.github/workflows/conduit_backend_ci.yml'
 
-permissions:
-  id-token: write
-  contents: read
+# permissions:
+#   id-token: write
+#   contents: read
 
-env:
-  AWS_REGION: us-east-1
-  BACKEND_CONDUIT_NAME: conduit_backend
-  IMAGE_TAG: ${{ secrets.AWS_REPO_URI }}:${{ github.sha }} # My AWS repo for docker image and add to my image the tag commit identificator.
+# env:
+#   AWS_REGION: us-east-1
+#   BACKEND_CONDUIT_NAME: conduit_backend
+#   IMAGE_TAG: ${{ secrets.AWS_REPO_URI }}:${{ github.sha }} # My AWS repo for docker image and add to my image the tag commit identificator.
 
-defaults:
-  run:
-    working-directory: conduit_backend/
+# defaults:
+#   run:
+#     working-directory: conduit_backend/
 
 
-jobs:
-  build-and-publish-image:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Configure AWS creds
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-          aws-region: ${{ env.AWS_REGION }}
+# jobs:
+#   build-and-publish-image:
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Configure AWS creds
+#         uses: aws-actions/configure-aws-credentials@v1-node16
+#         with:
+#           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+#           aws-region: ${{ env.AWS_REGION }}
       
-      - name: Build backend image
-        run: |
-          docker build -t "${{ env.IMAGE_TAG }}" .
+#       - name: Build backend image
+#         run: |
+#           docker build -t "${{ env.IMAGE_TAG }}" .
       
-      - name: Push image to AWS ECR
-        run: |
-          aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.AWS_REPO_URI }}
-          docker push "${{ env.IMAGE_TAG }}"
-          echo "✅ Pushed ${{ env.IMAGE_TAG }} to the repository was successful" >> $GITHUB_STEP_SUMMARY
+#       - name: Push image to AWS ECR
+#         run: |
+#           aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.AWS_REPO_URI }}
+#           docker push "${{ env.IMAGE_TAG }}"
+#           echo "✅ Pushed ${{ env.IMAGE_TAG }} to the repository was successful" >> $GITHUB_STEP_SUMMARY
       
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ecs-taskdef-template
-          path: ./backend-taskdef-template
+#       - name: Upload artifact
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ecs-taskdef-template
+#           path: ./backend-taskdef-template
 
 
-  deploy-to-ecs:
-    needs: build-and-publish-image
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ecs-taskdef-template
+#   deploy-to-ecs:
+#     needs: build-and-publish-image
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - name: Download artifact
+#         uses: actions/download-artifact@v2
+#         with:
+#           name: ecs-taskdef-template
       
-      - name: Configure AWS creds
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
-          aws-region: ${{ env.AWS_REGION }}
-        env:
-          TEMPLATE_FILE: ./my-artifact/backend-taskdef-template
+#       - name: Configure AWS creds
+#         uses: aws-actions/configure-aws-credentials@v1-node16
+#         with:
+#           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
+#           aws-region: ${{ env.AWS_REGION }}
+#         env:
+#           TEMPLATE_FILE: ./my-artifact/backend-taskdef-template
       
-      - name: Render taskDef from the template file
-        run: envsubst < ${{ env.TEMPLATE_FILE }} > ecs-taskdef.json
+#       - name: Render taskDef from the template file
+#         run: envsubst < ${{ env.TEMPLATE_FILE }} > ecs-taskdef.json
 
-      - name: Register taskDef
-        run: |
-          TASKDEF_ARN=$(\
-          aws ecs register-task-definition \
-          --cli-input-json file://ecs-taskdef.json \
-          --family ${{ env.BACKEND_CONDUIT_NAME }} \
-          --query 'taskDefinition.taskDefinitionArn' \
-          )
-          echo "TASKDEF_ARN=$TASKDEF_ARN" >> $GITHUB_ENV
+#       - name: Register taskDef
+#         run: |
+#           TASKDEF_ARN=$(\
+#           aws ecs register-task-definition \
+#           --cli-input-json file://ecs-taskdef.json \
+#           --family ${{ env.BACKEND_CONDUIT_NAME }} \
+#           --query 'taskDefinition.taskDefinitionArn' \
+#           )
+#           echo "TASKDEF_ARN=$TASKDEF_ARN" >> $GITHUB_ENV
 
-      - name: Deploy the new task
-        run: |
-          aws ecs update-service \
-          --cluster ${{ env.BACKEND_CONDUIT_NAME }} \
-          --service ${{ env.BACKEND_CONDUIT_NAME}} \
-          --task-definition ${{ env.TASKDEF.ARN }}
+#       - name: Deploy the new task
+#         run: |
+#           aws ecs update-service \
+#           --cluster ${{ env.BACKEND_CONDUIT_NAME }} \
+#           --service ${{ env.BACKEND_CONDUIT_NAME}} \
+#           --task-definition ${{ env.TASKDEF.ARN }}
 
-      - name: Wait for ECS service becomes stable 
-        run:
-          aws ecs wait services-stable --cluster ${{ env.BACKEND_CONDUIT_NAME }} --service ${{ env.BACKEND_CONDUIT_NAME }}
-          echo "✅ Deployed ${{ env.TASKDEF_ARN }} to ${{ env.BACKEND_CONDUIT_NAME }} service" >> $GITHUB_STEP_SUMMARY
+#       - name: Wait for ECS service becomes stable 
+#         run:
+#           aws ecs wait services-stable --cluster ${{ env.BACKEND_CONDUIT_NAME }} --service ${{ env.BACKEND_CONDUIT_NAME }}
+#           echo "✅ Deployed ${{ env.TASKDEF_ARN }} to ${{ env.BACKEND_CONDUIT_NAME }} service" >> $GITHUB_STEP_SUMMARY
