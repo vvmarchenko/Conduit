@@ -62,7 +62,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
           aws-region: ${{ env.AWS_REGION }}
         env:
-          TEMPLATE_FILE: ./my-artifact/backend-taskdef-template
+          TEMPLATE_FILE: ./ecs-taskdef-template/backend-taskdef-template
       
       - name: Render taskDef from the template file
         run: envsubst < ${{ env.TEMPLATE_FILE }} > ecs-taskdef.json
