@@ -62,8 +62,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ecs-taskdef-template
+          path: ./conduit_backend/artifact
         env:
-          TEMPLATE_FILE: ecs-taskdef-template/backend-taskdef-template
+          TEMPLATE_FILE: ./conduit_backend/artifact
 
           
       
