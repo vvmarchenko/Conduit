@@ -13,8 +13,8 @@ env:
   AWS_REGION: us-east-1
   BACKEND_CONDUIT_NAME: conduit_backend
   IMAGE_TAG: ${{ secrets.AWS_REPO_URI }}:${{ github.sha }} # My AWS repo for docker image and add to my image the tag commit identificator.
-  TEMPLATE_FILE: ecs-taskdef-template
   
+
 defaults:
   run:
     working-directory: conduit_backend/
@@ -64,7 +64,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       
       - name: Render taskDef from the template file
-        run: envsubst < ${{ env.TEMPLATE_FILE }} > ecs-taskdef.json
+        run: envsubst < ecs-taskdef-template > ecs-taskdef.json
 
       - name: Register taskDef
         run: |
