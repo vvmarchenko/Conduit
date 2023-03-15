@@ -27,7 +27,7 @@ jobs:
       - name: Configure AWS creds
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: ${{ secret.AWS_ARN_ROLE }}
+          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
           aws-region: ${{ AWS_REGION }}
       
       - name: Build backend image
@@ -59,7 +59,7 @@ jobs:
       - name: Configure AWS creds
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          role-to-assume: ${{ secret.AWS_ARN_ROLE }}
+          role-to-assume: ${{ secrets.AWS_ARN_ROLE }}
           aws-region: ${{ AWS_REGION }}
         env:
           TEMPLATE_FILE: ./my-artifact/backend-taskdef-template
