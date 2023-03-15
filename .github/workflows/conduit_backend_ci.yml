@@ -1,7 +1,7 @@
 name: "Conduit_backend"
 on:
   push:
-    path:
+    paths:
       - 'conduit_backend/**'
       - '.github/workflows/conduit_backend_ci.yml'
 
@@ -14,7 +14,7 @@ env:
   BACKEND_CONDUIT_NAME: conduit_backend
   IMAGE_TAG: ${{ secrets.AWS_REPO_URI }}:${{ github.sha }} # My AWS repo for docker image and add to my image the tag commit identificator.
 
-default:
+defaults:
   run:
     working-directory: conduit_backend/
 
