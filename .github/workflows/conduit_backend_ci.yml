@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ecs-taskdef-template
-          path: ./conduit_backend/backend-taskdef-template
+          path: ./conduit_backend/backend-taskdef.template
 
 
   deploy-to-ecs:
@@ -62,11 +62,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: ecs-taskdef-template
-          path: ./conduit_backend/artifact.txt
+          path: ./conduit_backend/backend-taskdef.template
                 
       - name: Render taskDef from the template file
         run: | 
-          envsubst < ./conduit_backend/artifact.txt > ecs-taskdef.json
+          envsubst < backend-taskdef.template > ecs-taskdef.json
 
       - name: Register taskDef
         run: |
