@@ -1,7 +1,7 @@
 {
   "containerDefinitions": [
     {
-      "name": "conduit-backend",
+      "name": "backend_conduit",
       "image": "${IMAGE_TAG}",
       "links": [
         "database:database"
