@@ -8,8 +8,8 @@
       ],
       "portMappings": [
         {
-          "name": "conduit-backend-4000-tcp",
-          "containerPort": 4000,
+          "name": "conduit-backend-27017-tcp",
+          "containerPort": 27017,
           "hostPort": 80,
           "protocol": "tcp"
         }
@@ -18,7 +18,7 @@
       "environment": [
         {
           "name": "PORT",
-          "value": "4000"
+          "value": "27017"
         },
         {
           "name": "DATABASE_HOST",
