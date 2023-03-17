@@ -83,7 +83,7 @@ jobs:
           aws ecs update-service \
           --cluster ${{ env.BACKEND_CONDUIT_NAME }} \
           --service ${{ env.BACKEND_CONDUIT_NAME}} \
-          --task-definition ${{ env.TASKDEF.ARN }}
+          --task-definition ${{ env.TASKDEF_ARN }}
 
       - name: Wait for ECS service becomes stable 
         run:
