@@ -1,15 +1,15 @@
 {
   "containerDefinitions": [
     {
-      "name": "backend_conduit",
+      "name": "conduit-backend",
       "image": "${IMAGE_TAG}",
       "links": [
         "database:database"
       ],
       "portMappings": [
         {
-          "name": "conduit-backend-27017-tcp",
-          "containerPort": 27017,
+          "name": "conduit-backend-4000-tcp",
+          "containerPort": 4000,
           "hostPort": 80,
           "protocol": "tcp"
         }
@@ -18,7 +18,7 @@
       "environment": [
         {
           "name": "PORT",
-          "value": "27017"
+          "value": "4000"
         },
         {
           "name": "DATABASE_HOST",
