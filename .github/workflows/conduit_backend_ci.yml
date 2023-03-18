@@ -86,6 +86,6 @@ jobs:
           --task-definition ${{ env.TASKDEF_ARN }}
 
       - name: Wait for ECS service becomes stable 
-        run:
+        run: |
           aws ecs wait services-stable --cluster ${{ env.BACKEND_CONDUIT_NAME }} --service ${{ env.BACKEND_CONDUIT_NAME }}
-          echo "✅ Deployed '${{ env.TASKDEF_ARN }}' to '${{ env.BACKEND_CONDUIT_NAME }}' service" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Deployed ${{ env.TASKDEF_ARN }} to ${{ env.BACKEND_CONDUIT_NAME }} service" >> $GITHUB_STEP_SUMMARY
