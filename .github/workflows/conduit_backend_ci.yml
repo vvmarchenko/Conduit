@@ -14,7 +14,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   BACKEND_CONDUIT_NAME: conduit-backend
-  IMAGE_TAG: ${{ secrets.AWS_REPO_URI }}:${{ github.sha }} # My AWS repo for docker image and add to my image the tag commit identificator
+  IMAGE_TAG: ${{ secrets.AWS_REPO_URI }}:${{ github.sha }}
   
 
 defaults:
