@@ -1,8 +1,6 @@
 name: "Conduit_backend"
 on:
   push:
-    paths-ignore:
-      - "README.md"
     paths:
       - 'conduit_backend/**'
       - '.github/workflows/conduit_backend_ci.yml'
